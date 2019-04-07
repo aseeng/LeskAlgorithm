@@ -35,7 +35,7 @@ public class Algorithm {
 
 		String best_sense = word.getSense(1).getGloss();
 		int max_overlap = 0;
-		
+
 		String[] context = sentence.replaceAll("[;|,|(|)|\"]", "").split(" ");
 		for (Synset sense : word.getSenses()) {
 
@@ -52,47 +52,24 @@ public class Algorithm {
 	}
 
 	private int ComputeOverlap(String[] signature, String[] context) throws JWNLException {
-		
-		int count=0;
-		
+
+		int count = 0;
+
 		for (int i = 0; i < context.length; i++) {
 			for (int j = 0; j < signature.length; j++) {
-				if(signature[j].equalsIgnoreCase(context[i]) && getPos(signature[j]) != "undefined")
+				if (signature[j].equalsIgnoreCase(context[i]) && getPos(signature[j]))
 					count++;
 			}
 		}
 		return count;
 	}
-	
-	 private String getPos(String word) throws JWNLException {
-		 
-		 
-		 List<String> article= new ArrayList<>(Arrays.asList("a","an", "the", "some", "in", "on", "up", "down","left", "right","into", "any", "ever" ,"it"));
-		 
-		 if(article.contains(word))
-			 return "undefined";
-		 
-		    int[] polysemies = new int[4];
-		    int max = 0;
-		    int index = 0;
-		    String[] pos = {"NOUN", "VERB", "ADJECTIVE", "ADVERB"};
-		    Dictionary d = Dictionary.getInstance();
-		    
-		    IndexWord noun_form = d.getIndexWord(POS.NOUN, word);
-		    polysemies[0] = (noun_form==null)?0:noun_form.getSenses().length;
-		    IndexWord verb_form = d.getIndexWord(POS.VERB, word);
-		    polysemies[1] = (verb_form==null)?0:verb_form.getSenses().length;
-		    IndexWord adj_form = d.getIndexWord(POS.ADJECTIVE, word);
-		    polysemies[2] = (adj_form==null)?0:adj_form.getSenses().length;
-		    IndexWord adv_form = d.getIndexWord(POS.ADVERB, word);
-		    polysemies[3] = (adv_form==null)?0:adv_form.getSenses().length;
-		    
-		    for (int i = 0; i < 4; i++) {
-				if(polysemies[i] > max) {
-					index = i;
-					max = polysemies[i];
-				}
-			}
-		    return pos[index];
-		  }
+
+	private boolean getPos(String word) throws JWNLException {
+
+		List<String> article = new ArrayList<>(Arrays.asList("a", "an", "the", "some", "in", "on", "up", "down", "left",
+				"right", "into", "any", "ever", "it"));
+
+		return article.contains(word);
+	}
+
 }
