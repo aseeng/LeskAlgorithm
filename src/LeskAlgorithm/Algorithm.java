@@ -57,19 +57,19 @@ public class Algorithm {
 
 		for (int i = 0; i < context.length; i++) {
 			for (int j = 0; j < signature.length; j++) {
-				if (signature[j].equalsIgnoreCase(context[i]) && getPos(signature[j]))
+				if (signature[j].equalsIgnoreCase(context[i]) && !blacklist(signature[j]))
 					count++;
 			}
 		}
 		return count;
 	}
 
-	private boolean getPos(String word) throws JWNLException {
+	private boolean blacklist(String word) throws JWNLException {
 
-		List<String> article = new ArrayList<>(Arrays.asList("a", "an", "the", "some", "in", "on", "up", "down", "left",
+		List<String> blacklist = new ArrayList<>(Arrays.asList("a", "an", "the", "some", "in", "on", "up", "down", "left",
 				"right", "into", "any", "ever", "it"));
 
-		return article.contains(word);
+		return blacklist.contains(word);
 	}
 
 }
