@@ -22,44 +22,44 @@ public class Algorithm {
 
 		try {
 			JWNL.initialize(new FileInputStream("asset\\file-properties.xml"));
-			BufferedReader buf = new BufferedReader(new FileReader("asset\\sentences.txt"));	
+			BufferedReader buf = new BufferedReader(new FileReader("asset\\sentences.txt"));
 			String lineJustFetched = null;
 			ArrayList<String> words = new ArrayList<>();
-			
+
 			while (true) {
 				lineJustFetched = buf.readLine();
-				if (lineJustFetched == null) 
+				if (lineJustFetched == null)
 					break;
-				else if(lineJustFetched.contains("-")) {
-					String line = lineJustFetched.replace("- ","");
+				else if (lineJustFetched.contains("-")) {
+					String line = lineJustFetched.replace("- ", "");
 					words.add(line);
 				}
-			}	
+			}
 			buf.close();
-
 
 			IndexWord sense = Dictionary.getInstance().getIndexWord(POS.NOUN, "bank");
 			ArrayList<String> word = new ArrayList<String>();
-			
-			Pattern pattern = Pattern.compile("\\*(\\w+)\\*");
+
+			Pattern pattern = Pattern.compile("[*]{2}(.*?)[*]{2}");
 
 			for (String string : words) {
 				Matcher matcher = pattern.matcher(string);
-				word.add(matcher.group(0));
+
+				if (matcher.find() && !word.contains(matcher.group(1).toLowerCase())) {				
+						word.add(matcher.group(1).toLowerCase());
+				}
 			}
-			
+
 			for (String string : word) {
 				System.out.println(string);
 			}
-			//String sentence = "the bank can guarantee deposits will eventually cover future tuition costs because it invests in adjustablerate mortgage securities";
-			//new Algorithm().leskAlgorithm(sense, sentence);
+
+			// new Algorithm().leskAlgorithm(sense, sentence);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
+
 	}
 
 	public String leskAlgorithm(IndexWord word, String sentence) throws JWNLException {
@@ -97,8 +97,8 @@ public class Algorithm {
 
 	private boolean blacklist(String word) throws JWNLException {
 
-		List<String> blacklist = new ArrayList<>(Arrays.asList("a", "an", "the", "some", "in", "on", "up", "down", "left",
-				"right", "into", "any", "ever", "it"));
+		List<String> blacklist = new ArrayList<>(Arrays.asList("a", "an", "the", "some", "in", "on", "up", "down",
+				"left", "right", "into", "any", "ever", "it"));
 
 		return blacklist.contains(word);
 	}
