@@ -2,7 +2,9 @@ package LeskAlgorithm;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,13 +20,31 @@ import net.didion.jwnl.dictionary.Dictionary;
 
 public class Algorithm {
 
-	public static void main(String[] args) {
+	public ArrayList<String> context = new ArrayList<>();
+	public ArrayList<String> word = new ArrayList<>();
+	public ArrayList<IndexWord> senses = new ArrayList<>();
+	
+	public Algorithm() {
 
 		try {
+
+			read("asset\\sentences.txt");
 			JWNL.initialize(new FileInputStream("asset\\file-properties.xml"));
-			BufferedReader buf = new BufferedReader(new FileReader("asset\\sentences.txt"));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// legge il file con le frasi e le inserisce in una lista
+	public void read(String path) throws IOException {
+
+		BufferedReader buf;
+
+		try {
+
+			buf = new BufferedReader(new FileReader(path));
 			String lineJustFetched = null;
-			ArrayList<String> words = new ArrayList<>();
 
 			while (true) {
 				lineJustFetched = buf.readLine();
@@ -32,34 +52,44 @@ public class Algorithm {
 					break;
 				else if (lineJustFetched.contains("-")) {
 					String line = lineJustFetched.replace("- ", "");
-					words.add(line);
+					context.add(line);
 				}
 			}
 			buf.close();
 
-			IndexWord sense = Dictionary.getInstance().getIndexWord(POS.NOUN, "bank");
-			ArrayList<String> word = new ArrayList<String>();
-
 			Pattern pattern = Pattern.compile("[*]{2}(.*?)[*]{2}");
 
-			for (String string : words) {
+			for (String string : context) {
 				Matcher matcher = pattern.matcher(string);
-
-				if (matcher.find() && !word.contains(matcher.group(1).toLowerCase())) {				
-						word.add(matcher.group(1).toLowerCase());
-				}
+				if (matcher.find() && !word.contains(matcher.group(1).toLowerCase()))
+					word.add(matcher.group(1).toLowerCase());
 			}
 
-			for (String string : word) {
-				System.out.println(string);
-			}
-
-			// new Algorithm().leskAlgorithm(sense, sentence);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 
+	}
+
+	public void findSense() {
+		
+		try {
+			
+			List<POS> pos = new ArrayList<POS>();
+			pos = POS.getAllPOS();
+			
+			for (String w : word) {
+				for (POS p : pos) {
+
+					IndexWord sense = Dictionary.getInstance().getIndexWord(p, w);
+					if(!sense.equals(null))
+						senses.add(sense);
+				}
+			}
+		} catch (JWNLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public String leskAlgorithm(IndexWord word, String sentence) throws JWNLException {
@@ -101,6 +131,14 @@ public class Algorithm {
 				"left", "right", "into", "any", "ever", "it"));
 
 		return blacklist.contains(word);
+	}
+
+	public static void main(String[] args) {
+
+		Algorithm lesk = new Algorithm();
+		lesk.findSense();
+		// lesk.leskAlgorithm(sense, sentence);
+
 	}
 
 }

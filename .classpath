@@ -5,5 +5,6 @@
 	<classpathentry kind="src" path="asset"/>
 	<classpathentry kind="lib" path="asset/jwnl.jar"/>
 	<classpathentry kind="lib" path="asset/org-apache-commons-logging.jar"/>
+	<classpathentry kind="lib" path="asset/edu.mit.jwi_2.4.0_jdk.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
