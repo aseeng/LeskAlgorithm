@@ -1,9 +1,13 @@
 package LeskAlgorithm;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.didion.jwnl.JWNL;
 import net.didion.jwnl.JWNLException;
@@ -18,17 +22,44 @@ public class Algorithm {
 
 		try {
 			JWNL.initialize(new FileInputStream("asset\\file-properties.xml"));
+			BufferedReader buf = new BufferedReader(new FileReader("asset\\sentences.txt"));	
+			String lineJustFetched = null;
+			ArrayList<String> words = new ArrayList<>();
+			
+			while (true) {
+				lineJustFetched = buf.readLine();
+				if (lineJustFetched == null) 
+					break;
+				else if(lineJustFetched.contains("-")) {
+					String line = lineJustFetched.replace("- ","");
+					words.add(line);
+				}
+			}	
+			buf.close();
+
+
 			IndexWord sense = Dictionary.getInstance().getIndexWord(POS.NOUN, "bank");
-			String sentence = "the bank can guarantee deposits will eventually cover future tuition costs because it invests in adjustablerate mortgage securities";
-			new Algorithm().leskAlgorithm(sense, sentence);
+			ArrayList<String> word = new ArrayList<String>();
+			
+			Pattern pattern = Pattern.compile("\\*(\\w+)\\*");
+
+			for (String string : words) {
+				Matcher matcher = pattern.matcher(string);
+				word.add(matcher.group(0));
+			}
+			
+			for (String string : word) {
+				System.out.println(string);
+			}
+			//String sentence = "the bank can guarantee deposits will eventually cover future tuition costs because it invests in adjustablerate mortgage securities";
+			//new Algorithm().leskAlgorithm(sense, sentence);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	public Algorithm() {
-		// TODO Auto-generated constructor stub
+		
+		
+		
 	}
 
 	public String leskAlgorithm(IndexWord word, String sentence) throws JWNLException {
