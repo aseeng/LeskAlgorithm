@@ -2,9 +2,10 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="asset"/>
+	<classpathentry excluding="apache-opennlp-1.9.1/" kind="src" path="asset"/>
 	<classpathentry kind="lib" path="asset/jwnl.jar"/>
 	<classpathentry kind="lib" path="asset/org-apache-commons-logging.jar"/>
 	<classpathentry kind="lib" path="asset/edu.mit.jwi_2.4.0_jdk.jar"/>
+	<classpathentry kind="lib" path="asset/opennlp-tools-1.9.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
